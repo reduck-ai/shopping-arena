@@ -14,7 +14,9 @@ export default {
 	check: async ({ answer }) => {
 		const asins = [...new Set([...answer.matchAll(ASIN)].map((m) => m[1]))];
 		if (!asins.length) return { pass: false, detail: "no Amazon product link" };
-		const pages = await Promise.all(asins.map((asin) => reduck("reduck/amazon.com/get-product", { asin })));
+		// One at a time: they run on the paired Chrome, which the arms use too.
+		const pages = [];
+		for (const asin of asins) pages.push(await reduck("reduck/amazon.com/get-product", { asin }));
 		const off = pages.filter((p) => !(p.price?.value <= MAX_PRICE && p.rating >= MIN_RATING));
 		return {
 			pass: off.length === 0,

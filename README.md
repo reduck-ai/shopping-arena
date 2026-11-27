@@ -21,7 +21,7 @@ Every run keeps its conversation, so any result can be checked against what the 
 
 ## Your first eval
 
-1. Copy `tasks/example.ts` to `tasks/<id>.ts`: a prompt and, when the answer can be checked by code, a `check`.
+1. Copy `tasks/anywhere.ts` to `tasks/<id>.ts`: a prompt and, when the answer can be checked by code, a `check`.
 2. If it needs a signed-in site, add a `requires` with `signedInAs`, the account read from an environment variable of yours.
 3. `pnpm bench --task <id> --arm shopduck,muse`: a run per arm.
 4. `pnpm replay`: read the runs, step by step. Review them over the MCP (below) if the task has no `check`.
@@ -35,15 +35,15 @@ A task is a file in `tasks/` that default-exports a `Task` (or a list of them):
 
 ```ts
 {
-  id: "hn-dropbox",
-  name: "The Dropbox launch post on Hacker News",
-  prompt: "Find the Hacker News post where Dropbox's founder first showed it…",
+  id: "airpods-pro-3",
+  name: "AirPods Pro 3 at the best price",
+  prompt: "Where are AirPods Pro 3 cheapest right now?",
   requires?: () => Verdict,   // checked before every run; the run is skipped if it fails
   check?: (run) => Verdict,   // from the answer and the session
 }
 ```
 
-See `tasks/example.ts`. `task.ts` has the helpers: `signedInAs` (assert the exact account a site is signed in as), `all`, `reduck` (run a Reduck script from a check).
+A prompt is what a shopper would type: the outcome they want in their own words, a store only when they have a reason for it. See `tasks/`. `task.ts` has the helpers: `signedInAs` (assert the exact account a site is signed in as), `all`, `reduck` (run a Reduck script from a check).
 
 A task in `tasks/` is public: its file is committed and its runs can go on the site. It names no account: the ones it needs come from the environment (`ARENA_X_HANDLE`, say, for a task that must be signed in to X). A task that carries personal data goes in `tasks/private/`, git-ignored, so each person keeps their own; its runs are never published. So does `tasks/private/deny.txt`, the strings of yours that must never be published, one per line: publishing does not run without it.
 
@@ -55,7 +55,7 @@ Requirements: Node 22.18+, pnpm, and Chrome with the Reduck extension paired, wh
 pnpm install
 npx @reduck-ai/cli@latest login                              # or set REDUCK_API_KEY
 pnpm bench                                                   # every task, every arm
-pnpm bench --task hn-dropbox --arm shopduck,muse --timeout 10   # minutes per run, default 15
+pnpm bench --task airpods-pro-3 --arm shopduck,muse --timeout 10   # minutes per run, default 15
 pnpm check                                                   # svelte-check: the .ts files and the app
 ```
 

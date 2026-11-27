@@ -8,7 +8,7 @@ const ASIN = /amazon\.com\/(?:[^\s)"\\]*\/)?(?:dp|gp\/product)\/([A-Z0-9]{10})/g
 export default {
 	id: "amazon-mac-stand",
 	name: "A MacBook stand on Amazon",
-	prompt: 'Laptop stand for my 14" MacBook Pro, aluminum and adjustable, well rated, under $60. I order everything on Amazon.',
+	prompt: 'Laptop stand for my 14" MacBook Pro, aluminum and adjustable, well rated, under $60. I order everything on Amazon US.',
 	// Each product the answer links is read from Amazon now: its price and its rating must fit the
 	// ask. Whether it is a stand for a 14" MacBook Pro is a person's call (`set_verdict`).
 	check: async ({ answer }) => {

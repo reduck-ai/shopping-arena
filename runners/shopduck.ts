@@ -5,6 +5,9 @@
  *
  * SHOPDUCK_URL names another deployment (a local `pnpm dev:web`, http://localhost:3000): the
  * same agent with other tools is the same runner.
+ *
+ * Every run is the visitor `arena` (ShopDuck's `shopduck_vid` cookie), so the chats of the
+ * benchmark are told apart from a person's wherever ShopDuck's chats are listed.
  */
 import type { ToolStep } from "../replay/chat/chat.ts";
 import type { Session, Step } from "../session.ts";
@@ -17,7 +20,7 @@ type Fact = { type: string; data: any; at: string };
 const shopduck: Runner = async (prompt, signal) => {
 	const created = await fetch(`${URL}/eve/v1/session`, {
 		method: "POST",
-		headers: { "content-type": "application/json" },
+		headers: { "content-type": "application/json", cookie: "shopduck_vid=arena" },
 		body: JSON.stringify({ message: prompt }),
 		signal
 	});

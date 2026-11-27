@@ -1,6 +1,6 @@
 # Shopping Arena
 
-AI shopping agents, compared on real stores, by [Reduck](https://reduck.ai).
+AI shopping agents, compared on real stores, by [Reduck](https://reduck.ai). Results: https://shopping-arena.reduck.ai.
 
 The same shopping prompt goes to several agents on real store sites. Define an eval in one file, run it, read every step, and share the results.
 

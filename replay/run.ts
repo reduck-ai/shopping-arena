@@ -121,12 +121,14 @@ export function scoreboard(tasks: TaskTrials[]) {
 		arms: arms.map((arm) => {
 			const mine = (ts: Trial[]) => ts.flatMap((t) => t.runs.filter((r) => r.arm === arm));
 			const graded = mine(trials).filter((r) => r.verdict);
+			const costs = mine(bothPassed).map((r) => r.costUsd);
 			return {
 				arm,
 				passed: graded.filter((r) => r.verdict!.pass).length,
 				graded: graded.length,
 				ms: mean(mine(bothPassed).map((r) => r.wallMs)),
-				usd: mean(mine(bothPassed).map((r) => r.costUsd ?? 0))
+				// Unknown, not free, when a run shows no cost.
+				usd: costs.includes(null) ? null : mean(costs as number[])
 			};
 		})
 	};
@@ -139,15 +141,12 @@ export function lead(board: ReturnType<typeof scoreboard>) {
 	if (!board.compared) return null;
 	const [a, b] = board.arms;
 	if (a.ms === b.ms && a.usd === b.usd) return null;
-	const winner = a.ms < b.ms || (a.ms === b.ms && a.usd < b.usd) ? a : b;
+	const winner = a.ms < b.ms || (a.ms === b.ms && (a.usd ?? 0) < (b.usd ?? 0)) ? a : b;
 	const other = winner === a ? b : a;
-	return {
-		arm: winner.arm,
-		lines: [
-			ratio(winner.ms, other.ms, "faster", "slower", "about as fast"),
-			ratio(winner.usd, other.usd, "cheaper", "costlier", "about the same cost")
-		]
-	};
+	const lines = [ratio(winner.ms, other.ms, "faster", "slower", "about as fast")];
+	if (winner.usd !== null && other.usd !== null)
+		lines.push(ratio(winner.usd, other.usd, "cheaper", "costlier", "about the same cost"));
+	return { arm: winner.arm, lines };
 }
 
 /** A model id as people say it: `claude-opus-5-5` is "Opus 5.5". An id of another shape is

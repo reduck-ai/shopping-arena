@@ -83,7 +83,7 @@
 					<span class="arm" role="rowheader" style:--arm="var(--{a.arm})">{ARM_NAMES[a.arm]}</span>
 					<span role="cell">{a.passed}/{a.graded}</span>
 					<span role="cell">{board.compared ? clock(a.ms) : "–"}</span>
-					<span role="cell">{board.compared ? `$${a.usd.toFixed(2)}` : "–"}</span>
+					<span role="cell">{board.compared ? usd(a.usd) : "–"}</span>
 				</div>
 			{/each}
 		</div>

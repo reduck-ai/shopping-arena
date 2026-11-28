@@ -82,7 +82,7 @@ pnpm check                                                   # svelte-check: the
   claude mcp add --transport http shopping-arena http://127.0.0.1:7802/mcp
   ```
 
-  `list_runs`, `read_session` and `read_step` (a run at any stage: as recorded, draft, published), `set_verdict` (a reviewer's verdict, for a task no code can grade or to overrule a check), `export_run`, `redact_export`, and `list_sessions` for any other Claude Code session.
+  `list_runs`, `read_session` and `read_step` (a run at any stage: as recorded, draft, published), `dump_sessions` (several, as recorded, whole to one file, images left out), `set_verdict` (a reviewer's verdict, for a task no code can grade or to overrule a check), `export_run`, `redact_export`, and `list_sessions` for any other Claude Code session.
 
 ## Publish
 

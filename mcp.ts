@@ -1,7 +1,7 @@
 /**
  * HTTP MCP server over the bench runs, so an agent can review them: list them, read one whole at
- * each stage (as recorded, its draft export, its published file), set its verdict, draft it and
- * redact the draft (export.ts says why). It also reads any Claude Code session (`session.ts`).
+ * each stage (as recorded, its draft export, its published file) or several to a file, set its
+ * verdict, draft it and redact the draft (export.ts says why). It also reads any Claude Code session (`session.ts`).
  * Approving a draft is a person's yes, so it stays `pnpm export --approve`.
  *
  *   pnpm mcp        # serves http://127.0.0.1:7802/mcp, and starts again when a file it imports changes
@@ -194,6 +194,31 @@ function build() {
 		async ({ id, index, cwd: dir = process.cwd(), stage: at }) => {
 			const s = open(id, dir, at);
 			return { content: [index].flat().flatMap((i) => inFull(s, i)) };
+		}
+	);
+
+	server.registerTool(
+		"dump_sessions",
+		{
+			description:
+				"Write several sessions whole to one file, as recorded, each step as read_step gives it and an image as a line in its place: to read more than one answer holds. Each session starts with a line `# <id>`.",
+			inputSchema: {
+				ids: z.array(id).min(1),
+				path: z.string().describe("Absolute path of the file to write."),
+				cwd
+			}
+		},
+		async ({ ids, path, cwd: dir = process.cwd() }) => {
+			const text = ids.map((i) => {
+				const s = open(i, dir, "raw");
+				const { steps, ...rest } = s;
+				const lines = steps.map((_, n) =>
+					inFull(s, n).map((c) => (c.type === "text" ? c.text : `[${c.mimeType} omitted]`)).join("\n")
+				);
+				return [`# ${i}`, JSON.stringify(rest, null, 2), ...lines].join("\n\n");
+			});
+			writeFileSync(path, text.join("\n\n"));
+			return json({ path, sessions: ids.length, chars: text.join("").length });
 		}
 	);
 
